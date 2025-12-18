@@ -39,7 +39,7 @@ public class PriorityRuleServiceImpl implements PriorityRuleService {
             score += rule.getWeight();
         }
 
-        return Math.max(score, 0);
+        return score;
     }
 
     @Override
