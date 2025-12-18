@@ -10,5 +10,9 @@ public class ComplaintStatus{
     private Complaint complaint;
     private String status;
     private LocalDateTime updatedOn;
-    
+    @Prepersist
+    public void onUpdate(){
+        updatedOn = LocalDateTime.now();
+        
+    }
 }
