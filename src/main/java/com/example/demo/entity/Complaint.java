@@ -1,5 +1,8 @@
+package com.example.demo.entity
+
+import jakarta.peristence.*;
+import java.time.LocalDateTime;
 @Entity
-@Table(name = "complaints")
 public class Complaint{
     @Id
     @GenerateValue(strategy= GenerationType.IDENTITY)
@@ -8,9 +11,12 @@ public class Complaint{
     private String description;
     private String category;
     private int priorityScore;
-    @Enumerated(EnumType.STRING)
-    private ComplaintStatus status;
+    
     private LocalDateTime submittedOn;
     @ManyToOne
-    private 
+    private User user;
+    @PrePersist
+    public void onCreate(){
+        submittedOn = LocalDateTime.now();
+    }
 }
