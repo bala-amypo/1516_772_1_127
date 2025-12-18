@@ -1,7 +1,6 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.Complaint;
-import com.example.demo.entity.ComplaintStatus;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.ComplaintRepository;
 import com.example.demo.service.ComplaintStatusService;
@@ -17,11 +16,11 @@ public class ComplaintStatusServiceImpl implements ComplaintStatusService {
     }
 
     @Override
-    public Complaint updateStatus(Long complaintId, ComplaintStatus status) {
+    public Complaint updateStatus(Long complaintId, Complaint.Status status) {
         Complaint complaint = complaintRepository.findById(complaintId)
                 .orElseThrow(() -> new ResourceNotFoundException("Complaint not found"));
 
-        complaint.setStatus(status);
+        complaint.setStatus(status);   // ✅ SAME ENUM TYPE
         return complaintRepository.save(complaint);
     }
 
