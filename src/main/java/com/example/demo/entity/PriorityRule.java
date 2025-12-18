@@ -19,10 +19,11 @@ public class PriorityRule {
     @ManyToMany(mappedBy = "priorityRules")
     private List<Complaint> complaints;
 
-    public PriorityRule() {}
+    public Integer getWeight() {
+        return weight;
+    }
 
-    // getters & setters
-    public Long getId() { return id; }
-    public Integer getWeight() { return weight; }
-    public boolean isActive() { return active; }
+    public boolean isActive() {
+        return active;
+    }
 }
