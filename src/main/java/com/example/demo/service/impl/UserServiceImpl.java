@@ -11,13 +11,9 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository repo;
-    private final PasswordEncoder encoder;
-    private final JwtUtil jwtUtil;
 
-    public UserServiceImpl(UserRepository repo, PasswordEncoder encoder, JwtUtil jwtUtil) {
+    public UserServiceImpl(UserRepository repo) {
         this.repo = repo;
-        this.encoder = encoder;
-        this.jwtUtil = jwtUtil;
     }
 
     @Override
@@ -25,7 +21,9 @@ public class UserServiceImpl implements UserService {
         if (repo.findByEmail(email).isPresent()) {
             throw new BadRequestException("email already exists");
         }
-        User user = new User(name, email, encoder.encode(password), User.Role.CUSTOMER);
+
+        // storing password as plain text (since no security is used)
+        User user = new User(name, email, password, User.Role.CUSTOMER);
         return repo.save(user);
     }
 
