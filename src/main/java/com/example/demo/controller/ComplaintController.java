@@ -1,12 +1,10 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.ComplaintRequest;
 import com.example.demo.entity.Complaint;
 import com.example.demo.entity.User;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.ComplaintService;
-
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,12 +25,12 @@ public class ComplaintController {
     // POST /complaints/submit
     @PostMapping("/submit")
     public Complaint submitComplaint(@RequestParam Long userId,
-                                     @RequestBody ComplaintRequest request) {
+                                     @RequestBody Complaint complaint) {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        return complaintService.submitComplaint(request, user);
+        return complaintService.submitComplaint(complaint, user);
     }
 
     // GET /complaints/user/{userId}
