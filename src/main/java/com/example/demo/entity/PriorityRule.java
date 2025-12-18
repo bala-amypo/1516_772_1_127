@@ -6,5 +6,6 @@ public class PriortyRule{
     @GeneratedValue(Strategy= GenerationType.IDENTITY)
     private Long id;
     private String categry;
-    private 
+    private Integer baseScore;
+    private String description;
 }
