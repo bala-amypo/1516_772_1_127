@@ -1,1 +1,1 @@
-demo/src/main/java/com/example/demo/config
+package com.eample.d
