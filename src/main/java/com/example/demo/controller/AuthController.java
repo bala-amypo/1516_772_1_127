@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.User;
-import com.example.demo.repository.UserRepository;
+import com.example.demo.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = "*")
@@ -9,32 +9,22 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public AuthController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public AuthController(UserService userService) {
+        this.userService = userService;
     }
 
-    // ================= REGISTER =================
-    // POST /api/auth/register
+    // REGISTER
     @PostMapping("/register")
     public User register(@RequestBody User user) {
-        return userRepository.save(user);
+        return userService.register(user);
     }
 
-    // ================= LOGIN =================
-    // POST /api/auth/login
+    // LOGIN
     @PostMapping("/login")
     public User login(@RequestParam String email,
                       @RequestParam String password) {
-
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        if (!user.getPassword().equals(password)) {
-            throw new RuntimeException("Invalid password");
-        }
-
-        return user;
+        return userService.login(email, password);
     }
 }
