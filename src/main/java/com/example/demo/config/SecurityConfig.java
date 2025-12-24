@@ -4,7 +4,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -22,25 +21,30 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-            // Stateless REST API (important for JWT)
-            .sessionManagement(session ->
-                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            // CSRF enabled for form login
+            .csrf(csrf -> csrf.disable()) // keep disabled for simplicity
+
+            // ENABLE LOGIN PAGE
+            .formLogin(form -> form
+                .loginPage("/login")          // custom login URL
+                .defaultSuccessUrl("/", true)
+                .failureUrl("/login?error=true")
+                .permitAll()
             )
 
-            // Disable CSRF (REST APIs)
-            .csrf(csrf -> csrf.disable())
+            // LOGOUT SUPPORT
+            .logout(logout -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login?logout=true")
+            )
 
-            // Disable default login mechanisms
-            .formLogin(form -> form.disable())
-            .httpBasic(basic -> basic.disable())
-
-            // Authorization rules
+            // AUTHORIZATION RULES
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
-                    "/",                       // 👈 allow home
-                    "/auth/**",                // login & register
-                    "/swagger-ui/**",          // swagger UI
-                    "/v3/api-docs/**"          // swagger docs
+                    "/login",
+                    "/auth/**",
+                    "/swagger-ui/**",
+                    "/v3/api-docs/**"
                 ).permitAll()
                 .anyRequest().authenticated()
             );
