@@ -24,6 +24,7 @@ public class ComplaintServiceImpl implements ComplaintService {
         this.priorityRuleService = priorityRuleService;
     }
 
+    // ✅ TEST METHOD
     @Override
     public Complaint submitComplaint(ComplaintRequest request, User customer) {
         Complaint c = new Complaint();
@@ -35,9 +36,7 @@ public class ComplaintServiceImpl implements ComplaintService {
         c.setUrgency(request.getUrgency());
         c.setCustomer(customer);
 
-        int score = priorityRuleService.computePriorityScore(c);
-        c.setPriorityScore(score);
-
+        c.setPriorityScore(priorityRuleService.computePriorityScore(c));
         return complaintRepository.save(c);
     }
 
@@ -49,5 +48,16 @@ public class ComplaintServiceImpl implements ComplaintService {
     @Override
     public List<Complaint> getPrioritizedComplaints() {
         return complaintRepository.findAllOrderByPriorityScoreDescCreatedAtAsc();
+    }
+
+    // ✅ CONTROLLER METHODS
+    @Override
+    public Complaint saveComplaint(Complaint complaint) {
+        return complaintRepository.save(complaint);
+    }
+
+    @Override
+    public Complaint getComplaintById(Long id) {
+        return complaintRepository.findById(id).orElse(null);
     }
 }
