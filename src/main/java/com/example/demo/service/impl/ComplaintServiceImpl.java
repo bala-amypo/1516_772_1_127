@@ -50,4 +50,14 @@ public class ComplaintServiceImpl implements ComplaintService {
     public List<Complaint> getPrioritizedComplaints() {
         return complaintRepository.findAllOrderByPriorityScoreDescCreatedAtAsc();
     }
+
+    @Override
+    public Complaint getComplaintById(Long id) {
+        return complaintRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public Complaint saveComplaint(Complaint complaint) {
+        return complaintRepository.save(complaint);
+    }
 }
