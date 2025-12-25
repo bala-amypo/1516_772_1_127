@@ -7,18 +7,18 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/rules")
+@RequestMapping("/rules")
 public class PriorityRuleController {
 
-    private final PriorityRuleService ruleService;
+    private final PriorityRuleService priorityRuleService;
 
-    public PriorityRuleController(PriorityRuleService ruleService) {
-        this.ruleService = ruleService;
+    public PriorityRuleController(PriorityRuleService priorityRuleService) {
+        this.priorityRuleService = priorityRuleService;
     }
 
-    // GET /rules/all
+    // GET ALL ACTIVE RULES
     @GetMapping("/all")
-    public List<PriorityRule> getAllRules() {
-        return ruleService.getActiveRules();
+    public List<PriorityRule> getAllActiveRules() {
+        return priorityRuleService.getActiveRules();
     }
 }
