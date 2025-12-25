@@ -5,7 +5,7 @@ import com.example.demo.repository.UserRepository;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import java.util.Collections;
+import java.util.List;
 
 public class CustomUserDetailsService implements UserDetailsService {
 
@@ -18,10 +18,11 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) {
         User u = repo.findByEmail(email).orElseThrow();
+
         return new org.springframework.security.core.userdetails.User(
                 u.getEmail(),
                 u.getPassword(),
-                Collections.singleton(new SimpleGrantedAuthority("ROLE_" + u.getRole()))
+                List.of(new SimpleGrantedAuthority("ROLE_" + u.getRole().name()))
         );
     }
 }
