@@ -1,38 +1,13 @@
-package com.example.demo.service.impl;
+package com.example.demo.service;
 
 import com.example.demo.entity.Complaint;
 import com.example.demo.entity.PriorityRule;
-import com.example.demo.repository.PriorityRuleRepository;
 
 import java.util.List;
 
-public class PriorityRuleServiceImpl {
+public interface PriorityRuleService {
 
-    private final PriorityRuleRepository repo;
+    List<PriorityRule> getActiveRules();
 
-    public PriorityRuleServiceImpl(PriorityRuleRepository repo) {
-        this.repo = repo;
-    }
-
-    public List<PriorityRule> getActiveRules() {
-        return repo.findByActiveTrue();
-    }
-
-    public int computePriorityScore(Complaint complaint) {
-        int score = 0;
-
-        if (complaint.getSeverity() != null) {
-            score += complaint.getSeverity().ordinal() + 1;
-        }
-        if (complaint.getUrgency() != null) {
-            score += complaint.getUrgency().ordinal() + 1;
-        }
-
-        for (PriorityRule rule : repo.findByActiveTrue()) {
-            score += rule.getWeight();
-            complaint.getPriorityRules().add(rule);
-            rule.getComplaints().add(complaint);
-        }
-        return score;
-    }
+    int computePriorityScore(Complaint complaint);
 }
