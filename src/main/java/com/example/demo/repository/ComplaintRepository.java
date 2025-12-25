@@ -2,17 +2,17 @@ package com.example.demo.repository;
 
 import com.example.demo.entity.Complaint;
 import com.example.demo.entity.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
-public interface ComplaintRepository {
+@Repository   // ⭐ THIS WAS MISSING
+public interface ComplaintRepository extends JpaRepository<Complaint, Long> {
 
-    Complaint save(Complaint complaint);
+    List<Complaint> findByCustomer(User customer);
 
-    Optional<Complaint> findById(Long id);
-
-    List<Complaint> findByCustomer(User user);
-
+    @Query("SELECT c FROM Complaint c ORDER BY c.priorityScore DESC, c.createdAt ASC")
     List<Complaint> findAllOrderByPriorityScoreDescCreatedAtAsc();
 }
