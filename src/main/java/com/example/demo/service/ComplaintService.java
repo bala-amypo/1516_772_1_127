@@ -13,4 +13,8 @@ public interface ComplaintService {
     List<Complaint> getComplaintsForUser(User user);
 
     List<Complaint> getPrioritizedComplaints();
+
+    Complaint getComplaintById(Long id);
+
+    Complaint saveComplaint(Complaint complaint);
 }
