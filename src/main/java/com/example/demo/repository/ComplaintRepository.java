@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository   // ⭐ THIS WAS MISSING
+@Repository
 public interface ComplaintRepository extends JpaRepository<Complaint, Long> {
 
     List<Complaint> findByCustomer(User customer);
