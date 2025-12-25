@@ -3,41 +3,72 @@ package com.example.demo.controller;
 import com.example.demo.dto.ComplaintRequest;
 import com.example.demo.entity.Complaint;
 import com.example.demo.entity.User;
-import com.example.demo.repository.UserRepository;
 import com.example.demo.service.ComplaintService;
+import com.example.demo.service.UserService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RestController
+@RequestMapping("/complaints")
 public class ComplaintController {
 
     private final ComplaintService complaintService;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public ComplaintController(
-            ComplaintService complaintService,
-            UserRepository userRepository
-    ) {
+    public ComplaintController(ComplaintService complaintService,
+                               UserService userService) {
         this.complaintService = complaintService;
-        this.userRepository = userRepository;
+        this.userService = userService;
     }
 
-    public Complaint submitComplaint(Long userId, ComplaintRequest request) {
-        User user = userRepository.findById(userId).orElse(null);
-        return complaintService.submitComplaint(request, user);
+    // SUBMIT COMPLAINT
+    @PostMapping("/submit")
+    public ResponseEntity<Complaint> submitComplaint(
+            @RequestParam Long userId,
+            @RequestBody ComplaintRequest request) {
+
+        User user = userService.findByEmail(
+                userService.findByEmail(userId.toString()) != null
+                        ? userId.toString()
+                        : null
+        );
+
+        Complaint complaint = complaintService.submitComplaint(request, user);
+        return ResponseEntity.ok(complaint);
     }
 
-    public List<Complaint> getUserComplaints(Long userId) {
-        User user = userRepository.findById(userId).orElse(null);
-        return complaintService.getComplaintsForUser(user);
+    // GET USER COMPLAINTS
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Complaint>> getUserComplaints(@PathVariable Long userId) {
+
+        User user = new User();
+        user.setId(userId);
+
+        List<Complaint> complaints = complaintService.getComplaintsForUser(user);
+        return ResponseEntity.ok(complaints);
     }
 
-    public List<Complaint> getAllPrioritized() {
-        return complaintService.getPrioritizedComplaints();
+    // GET PRIORITIZED COMPLAINTS
+    @GetMapping("/prioritized")
+    public ResponseEntity<List<Complaint>> getPrioritizedComplaints() {
+        return ResponseEntity.ok(complaintService.getPrioritizedComplaints());
     }
 
-    public Complaint updateStatus(Long complaintId, Complaint.Status status) {
-        Complaint complaint = complaintService.getComplaintById(complaintId);
+    // UPDATE STATUS
+    @PutMapping("/status/{id}")
+    public ResponseEntity<Complaint> updateStatus(
+            @PathVariable Long id,
+            @RequestParam Complaint.Status status) {
+
+        Complaint complaint = complaintService.getComplaintById(id);
+        if (complaint == null) {
+            return ResponseEntity.notFound().build();
+        }
+
         complaint.setStatus(status);
-        return complaintService.saveComplaint(complaint);
+        Complaint saved = complaintService.saveComplaint(complaint);
+        return ResponseEntity.ok(saved);
     }
 }
