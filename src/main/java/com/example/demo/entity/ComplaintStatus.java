@@ -30,4 +30,5 @@ public class ComplaintStatus {
     public Status getStatus() {
         return status;
     }
+    
 }
