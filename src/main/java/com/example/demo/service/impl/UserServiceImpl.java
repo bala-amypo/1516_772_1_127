@@ -4,7 +4,9 @@ import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
+@Service   // ⭐ THIS WAS MISSING
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -16,7 +18,7 @@ public class UserServiceImpl implements UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    // ✅ USED BY TESTS
+    // Used by tests
     @Override
     public User registerCustomer(String name, String email, String rawPassword) {
         if (userRepository.findByEmail(email).isPresent()) {
@@ -37,7 +39,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByEmail(email).orElse(null);
     }
 
-    // ✅ USED BY CONTROLLER
+    // Used by controller
     @Override
     public User register(User user) {
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
@@ -49,7 +51,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User login(String email, String password) {
-        // Simple stub (controllers compile, tests unaffected)
         return userRepository.findByEmail(email).orElse(null);
     }
 }
