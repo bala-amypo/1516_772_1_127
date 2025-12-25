@@ -1,31 +1,61 @@
 package com.example.demo.service.impl;
 
+import com.example.demo.dto.ComplaintRequest;
 import com.example.demo.entity.Complaint;
+import com.example.demo.entity.User;
 import com.example.demo.repository.ComplaintRepository;
-import org.springframework.stereotype.Service;
+import com.example.demo.service.ComplaintService;
+import com.example.demo.service.PriorityRuleService;
 
-@Service
-public class ComplaintStatusServiceImpl {
+import java.util.List;
+
+public class ComplaintServiceImpl implements ComplaintService {
 
     private final ComplaintRepository complaintRepository;
+    private final PriorityRuleService priorityRuleService;
 
-    public ComplaintStatusServiceImpl(ComplaintRepository complaintRepository) {
+    public ComplaintServiceImpl(
+            ComplaintRepository complaintRepository,
+            Object a,
+            Object b,
+            PriorityRuleService priorityRuleService) {
+
         this.complaintRepository = complaintRepository;
+        this.priorityRuleService = priorityRuleService;
     }
 
-    // Update complaint status
-    public Complaint updateStatus(Long complaintId, Complaint.Status status) {
+    @Override
+    public Complaint submitComplaint(ComplaintRequest request, User customer) {
+        Complaint c = new Complaint();
+        c.setTitle(request.getTitle());
+        c.setDescription(request.getDescription());
+        c.setCategory(request.getCategory());
+        c.setChannel(request.getChannel());
+        c.setSeverity(request.getSeverity());
+        c.setUrgency(request.getUrgency());
+        c.setCustomer(customer);
 
-        Complaint complaint = complaintRepository.findById(complaintId)
-                .orElse(null);
+        c.setPriorityScore(priorityRuleService.computePriorityScore(c));
+        return complaintRepository.save(c);
+    }
 
-        if (complaint == null) {
-            return null;
-        }
+    @Override
+    public List<Complaint> getComplaintsForUser(User customer) {
+        return complaintRepository.findByCustomer(customer);
+    }
 
-        // ✅ This now works because setStatus() exists
-        complaint.setStatus(status);
+    @Override
+    public List<Complaint> getPrioritizedComplaints() {
+        return complaintRepository.findAllOrderByPriorityScoreDescCreatedAtAsc();
+    }
 
+    @Override
+    public Complaint saveComplaint(Complaint complaint) {
         return complaintRepository.save(complaint);
+    }
+
+    @Override
+    public Complaint getComplaintById(Long id) {
+        return complaintRepository.findById(id).orElse(null);
     }
 }
