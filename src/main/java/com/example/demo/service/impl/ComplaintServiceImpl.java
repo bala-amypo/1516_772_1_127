@@ -1,31 +1,27 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.dto.ComplaintRequest;
-import com.example.demo.entity.Complaint;
-import com.example.demo.entity.User;
+import com.example.demo.entity.*;
 import com.example.demo.repository.ComplaintRepository;
-import com.example.demo.service.ComplaintService;
-import com.example.demo.service.PriorityRuleService;
+import com.example.demo.service.*;
 
 import java.util.List;
 
 public class ComplaintServiceImpl implements ComplaintService {
 
-    private final ComplaintRepository complaintRepository;
-    private final PriorityRuleService priorityRuleService;
+    private final ComplaintRepository repo;
+    private final PriorityRuleService ruleService;
 
     public ComplaintServiceImpl(
-            ComplaintRepository complaintRepository,
-            Object ignored1,
-            Object ignored2,
-            PriorityRuleService priorityRuleService
-    ) {
-        this.complaintRepository = complaintRepository;
-        this.priorityRuleService = priorityRuleService;
+            ComplaintRepository repo,
+            Object a, Object b,
+            PriorityRuleService ruleService) {
+        this.repo = repo;
+        this.ruleService = ruleService;
     }
 
     @Override
-    public Complaint submitComplaint(ComplaintRequest req, User user) {
+    public Complaint submitComplaint(ComplaintRequest req, User customer) {
         Complaint c = new Complaint();
         c.setTitle(req.getTitle());
         c.setDescription(req.getDescription());
@@ -33,31 +29,19 @@ public class ComplaintServiceImpl implements ComplaintService {
         c.setChannel(req.getChannel());
         c.setSeverity(req.getSeverity());
         c.setUrgency(req.getUrgency());
-        c.setCustomer(user);
+        c.setCustomer(customer);
 
-        int score = priorityRuleService.computePriorityScore(c);
-        c.setPriorityScore(score);
-
-        return complaintRepository.save(c);
+        c.setPriorityScore(ruleService.computePriorityScore(c));
+        return repo.save(c);
     }
 
     @Override
-    public List<Complaint> getComplaintsForUser(User user) {
-        return complaintRepository.findByCustomer(user);
+    public List<Complaint> getComplaintsForUser(User customer) {
+        return repo.findByCustomer(customer);
     }
 
     @Override
     public List<Complaint> getPrioritizedComplaints() {
-        return complaintRepository.findAllOrderByPriorityScoreDescCreatedAtAsc();
-    }
-
-    @Override
-    public Complaint getComplaintById(Long id) {
-        return complaintRepository.findById(id).orElse(null);
-    }
-
-    @Override
-    public Complaint saveComplaint(Complaint complaint) {
-        return complaintRepository.save(complaint);
+        return repo.findAllOrderByPriorityScoreDescCreatedAtAsc();
     }
 }
