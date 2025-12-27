@@ -10,16 +10,15 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service   // ⭐ THIS WAS MISSING
+@Service
 public class ComplaintServiceImpl implements ComplaintService {
 
     private final ComplaintRepository complaintRepository;
     private final PriorityRuleService priorityRuleService;
 
+    // ✅ ONLY REAL BEANS IN CONSTRUCTOR
     public ComplaintServiceImpl(
             ComplaintRepository complaintRepository,
-            Object a,
-            Object b,
             PriorityRuleService priorityRuleService) {
 
         this.complaintRepository = complaintRepository;
