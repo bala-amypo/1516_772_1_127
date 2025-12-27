@@ -3,7 +3,11 @@ package com.example.demo.service.impl;
 import com.example.demo.entity.*;
 import com.example.demo.repository.PriorityRuleRepository;
 import com.example.demo.service.PriorityRuleService;
+import org.springframework.stereotype.Service;
 
+import java.util.List;
+
+@Service   // ⭐⭐⭐ THIS LINE FIXES EVERYTHING
 public class PriorityRuleServiceImpl implements PriorityRuleService {
 
     private final PriorityRuleRepository repo;
@@ -31,7 +35,7 @@ public class PriorityRuleServiceImpl implements PriorityRuleService {
     }
 
     @Override
-    public java.util.List<PriorityRule> getActiveRules() {
+    public List<PriorityRule> getActiveRules() {
         return repo.findByActiveTrue();
     }
 }
