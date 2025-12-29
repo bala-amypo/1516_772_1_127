@@ -8,12 +8,11 @@ import java.util.List;
 
 public interface ComplaintService {
 
-    // used by tests
     Complaint submitComplaint(ComplaintRequest request, User customer);
-    List<Complaint> getComplaintsForUser(User customer);
-    List<Complaint> getPrioritizedComplaints();
 
-    // used by controller
-    Complaint saveComplaint(Complaint complaint);
     Complaint getComplaintById(Long id);
+
+    List<Complaint> getComplaintsForUser(User customer);
+
+    List<Complaint> getPrioritizedComplaints();
 }
