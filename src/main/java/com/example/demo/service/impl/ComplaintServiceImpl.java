@@ -10,7 +10,6 @@ import com.example.demo.service.UserService;
 
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -20,7 +19,7 @@ public class ComplaintServiceImpl implements ComplaintService {
     private final PriorityRuleService priorityRuleService;
     private final UserService userService;
 
-    // 🔹 Constructor used by Spring Boot
+    // Constructor for Spring Boot
     public ComplaintServiceImpl(
             ComplaintRepository complaintRepository,
             PriorityRuleService priorityRuleService,
@@ -30,7 +29,7 @@ public class ComplaintServiceImpl implements ComplaintService {
         this.userService = userService;
     }
 
-    // 🔹 Constructor required ONLY for TestNG tests
+    // Constructor required for TestNG tests
     public ComplaintServiceImpl(
             ComplaintRepository complaintRepository,
             Object ignored1,
@@ -41,9 +40,9 @@ public class ComplaintServiceImpl implements ComplaintService {
         this.userService = null;
     }
 
-    // =========================================================
+    // =====================================================
     // SUBMIT COMPLAINT
-    // =========================================================
+    // =====================================================
     @Override
     public Complaint submitComplaint(ComplaintRequest request, User customer) {
 
@@ -56,7 +55,6 @@ public class ComplaintServiceImpl implements ComplaintService {
         complaint.setUrgency(request.getUrgency());
         complaint.setCustomer(customer);
         complaint.setStatus(Complaint.Status.NEW);
-        complaint.setCreatedAt(LocalDateTime.now()); // ✅ FIXED
 
         int score = priorityRuleService.computePriorityScore(complaint);
         complaint.setPriorityScore(score);
@@ -64,34 +62,34 @@ public class ComplaintServiceImpl implements ComplaintService {
         return complaintRepository.save(complaint);
     }
 
-    // =========================================================
+    // =====================================================
     // SAVE COMPLAINT (used by controller)
-    // =========================================================
+    // =====================================================
     @Override
     public Complaint saveComplaint(Complaint complaint) {
         return complaintRepository.save(complaint);
     }
 
-    // =========================================================
+    // =====================================================
     // GET COMPLAINT BY ID
-    // =========================================================
+    // =====================================================
     @Override
     public Complaint getComplaintById(Long id) {
         return complaintRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Complaint not found"));
     }
 
-    // =========================================================
+    // =====================================================
     // GET COMPLAINTS FOR USER
-    // =========================================================
+    // =====================================================
     @Override
     public List<Complaint> getComplaintsForUser(User customer) {
         return complaintRepository.findByCustomer(customer);
     }
 
-    // =========================================================
+    // =====================================================
     // GET PRIORITIZED COMPLAINTS
-    // =========================================================
+    // =====================================================
     @Override
     public List<Complaint> getPrioritizedComplaints() {
         return complaintRepository.findAllOrderByPriorityScoreDescCreatedAtAsc();
