@@ -1,3 +1,18 @@
+package com.example.demo.service.impl;
+
+import com.example.demo.dto.ComplaintRequest;
+import com.example.demo.entity.Complaint;
+import com.example.demo.entity.User;
+import com.example.demo.repository.ComplaintRepository;
+import com.example.demo.service.ComplaintService;
+import com.example.demo.service.PriorityRuleService;
+import com.example.demo.service.UserService;
+
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Service
 public class ComplaintServiceImpl implements ComplaintService {
 
@@ -5,6 +20,7 @@ public class ComplaintServiceImpl implements ComplaintService {
     private final PriorityRuleService priorityRuleService;
     private final UserService userService;
 
+    // 🔹 Main constructor (Spring uses this)
     public ComplaintServiceImpl(
             ComplaintRepository complaintRepository,
             PriorityRuleService priorityRuleService,
@@ -14,7 +30,7 @@ public class ComplaintServiceImpl implements ComplaintService {
         this.userService = userService;
     }
 
-    // constructor for tests
+    // 🔹 Test constructor (required by your TestNG tests)
     public ComplaintServiceImpl(
             ComplaintRepository complaintRepository,
             Object ignored1,
@@ -36,7 +52,7 @@ public class ComplaintServiceImpl implements ComplaintService {
         complaint.setUrgency(request.getUrgency());
         complaint.setCustomer(customer);
         complaint.setStatus(Complaint.Status.NEW);
-        complaint.setSubmittedOn(LocalDateTime.now()); // ✅ FIXED
+        complaint.setSubmittedOn(LocalDateTime.now());
 
         int score = priorityRuleService.computePriorityScore(complaint);
         complaint.setPriorityScore(score);
