@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.ComplaintRequest;
 import com.example.demo.entity.Complaint;
 import com.example.demo.entity.User;
 
@@ -7,13 +8,13 @@ import java.util.List;
 
 public interface ComplaintService {
 
-    Complaint submitComplaint(Complaint complaint, User user);
+    Complaint submitComplaint(ComplaintRequest request, User customer);
 
     Complaint getComplaintById(Long id);
 
-    List<Complaint> getComplaintsByUser(User user);
+    List<Complaint> getComplaintsForUser(User customer);
 
-    List<Complaint> getAllComplaints();
+    List<Complaint> getPrioritizedComplaints();
 
-    Complaint saveComplaint(Complaint complaint);
+    Complaint saveComplaint(Complaint complaint);   // ✅ ADD THIS
 }
