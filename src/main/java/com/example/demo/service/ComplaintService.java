@@ -15,4 +15,6 @@ public interface ComplaintService {
     List<Complaint> getComplaintsForUser(User customer);
 
     List<Complaint> getPrioritizedComplaints();
+
+    Complaint saveComplaint(Complaint complaint);   // ✅ ADD THIS
 }
