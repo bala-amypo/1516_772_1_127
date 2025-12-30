@@ -8,6 +8,7 @@ import com.example.demo.service.ComplaintService;
 import com.example.demo.service.PriorityRuleService;
 import com.example.demo.service.UserService;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,22 +20,25 @@ public class ComplaintServiceImpl implements ComplaintService {
     private final PriorityRuleService priorityRuleService;
     private final UserService userService;
 
-    // Constructor for Spring Boot
+    // ✅ THIS constructor is used by Spring Boot
+    @Autowired
     public ComplaintServiceImpl(
             ComplaintRepository complaintRepository,
             PriorityRuleService priorityRuleService,
             UserService userService) {
+
         this.complaintRepository = complaintRepository;
         this.priorityRuleService = priorityRuleService;
         this.userService = userService;
     }
 
-    // Constructor required for TestNG tests
+    // ✅ THIS constructor is ONLY for TestNG (Spring will ignore it)
     public ComplaintServiceImpl(
             ComplaintRepository complaintRepository,
             Object ignored1,
             Object ignored2,
             PriorityRuleService priorityRuleService) {
+
         this.complaintRepository = complaintRepository;
         this.priorityRuleService = priorityRuleService;
         this.userService = null;
@@ -62,34 +66,22 @@ public class ComplaintServiceImpl implements ComplaintService {
         return complaintRepository.save(complaint);
     }
 
-    // =====================================================
-    // SAVE COMPLAINT (used by controller)
-    // =====================================================
     @Override
     public Complaint saveComplaint(Complaint complaint) {
         return complaintRepository.save(complaint);
     }
 
-    // =====================================================
-    // GET COMPLAINT BY ID
-    // =====================================================
     @Override
     public Complaint getComplaintById(Long id) {
         return complaintRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Complaint not found"));
     }
 
-    // =====================================================
-    // GET COMPLAINTS FOR USER
-    // =====================================================
     @Override
     public List<Complaint> getComplaintsForUser(User customer) {
         return complaintRepository.findByCustomer(customer);
     }
 
-    // =====================================================
-    // GET PRIORITIZED COMPLAINTS
-    // =====================================================
     @Override
     public List<Complaint> getPrioritizedComplaints() {
         return complaintRepository.findAllOrderByPriorityScoreDescCreatedAtAsc();
