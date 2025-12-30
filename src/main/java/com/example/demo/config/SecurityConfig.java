@@ -25,8 +25,6 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
-    // 🔑 IMPORTANT: link DB users + password encoder
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
 
